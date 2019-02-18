@@ -30,15 +30,16 @@ app.get('/api/usuarios', Autentificar, function(req, res) {
 
 app.post('/api/usuarios', (req, res) => {
     let body = req.body;
-    if ((!body.nombre) || (!body.clave)) {
+    if ((!body.nombre) || (!body.clave) || (!body.nombreCompleto)) {
         return res.status(200).json({
             ok: false,
             errBaseDatos: false,
-            err: 'Nombre y clave requeridos'
+            err: 'Nombre, clave y nombre completo requeridos'
         })
     }
     let usuario = new Usuario({
         nombre: body.nombre,
+        nombreCompleto: body.nombreCompleto,
         clave: bcrypt.hashSync(body.clave, 10)
     })
     usuario.save((err, usuarioDB) => {
@@ -138,7 +139,7 @@ app.delete('/api/usuarios/:id', [Autentificar, AutentificarAdmin], (req, res) =>
 app.put('/api/usuarios/:id', [Autentificar, AutentificarAdminOUser], (req, res) => {
     let body = req.body;
     let id = req.params.id;
-    body = _.pick(body, ['nombre']);
+    body = _.pick(body, ['nombre', 'nombreCompleto']);
     Usuario.findByIdAndUpdate(id, body, { new: true }, (err, usuarioDB) => {
         if (err) {
             return res.status(200).json({
