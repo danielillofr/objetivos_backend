@@ -19,7 +19,6 @@ app.get('/api/objetivos', Autentificar, (req, res) => {
             })
         })
         .catch(err => {
-            console.log('Error:', err);
             res.json({
                 ok: false,
                 errBaseDatos: err.errBaseDatos,
@@ -28,7 +27,24 @@ app.get('/api/objetivos', Autentificar, (req, res) => {
         })
 })
 
-app.post('/api/objetivos', [Autentificar, AutentificarAdmin], (req, res) => {
+app.get('/api/objetivos/:idUsuario', (req, res) => {
+    objetivoAccess.Obtener_objetivos_usuario(req.params.idUsuario)
+        .then(objetivos => {
+            res.json({
+                ok: true,
+                objetivos
+            })
+        })
+        .catch(err => {
+            res.json({
+                ok: false,
+                errBaseDatos: err.errBaseDatos,
+                err: err.err
+            })
+        })
+});
+
+app.post('/api/objetivos', Autentificar, (req, res) => {
     const body = req.body;
     if ((!body.nombre) || (!body.usuario) || (!body.fechaInicio) || (!body.fechaFin)) {
         return res.json({
@@ -38,10 +54,10 @@ app.post('/api/objetivos', [Autentificar, AutentificarAdmin], (req, res) => {
         })
     }
     objetivoAccess.Crear_objetivo(body)
-        .then(objetivoDB => {
+        .then(objetivo => {
             res.json({
                 ok: true,
-                objetivo: objetivoDB
+                objetivo: objetivo
             })
         })
         .catch(err => {

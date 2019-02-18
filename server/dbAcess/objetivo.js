@@ -16,14 +16,28 @@ Obtener_todos_objetivos = () => {
     })
 }
 
+Obtener_objetivos_usuario = (idUsuario) => {
+    return new Promise((resolve, reject) => {
+        Objetivo.find({ usuario: idUsuario }, (err, objetivosDB) => {
+            if (err) {
+                reject({
+                    errBaseDatos: true,
+                    err
+                })
+            }
+            resolve(objetivosDB);
+        })
+    })
+}
+
 Crear_objetivo = (datosObjetivo) => {
     return new Promise((resolve, reject) => {
         const diasLaborables = fechaUtils.Obtener_dias_laborables(datosObjetivo.fechaInicio, datosObjetivo.fechaFin);
         const objetivo = new Objetivo({
             usuario: datosObjetivo.usuario,
             nombre: datosObjetivo.nombre,
-            fechaInicio: datosObjetivo.fechaInicio,
-            fechaFin: datosObjetivo.fechaFin,
+            fechaInicio: Date.parse(datosObjetivo.fechaInicio),
+            fechaFin: Date.parse(datosObjetivo.fechaFin),
             conseguido: datosObjetivo.conseguido,
             diasLaborables
         });
@@ -76,4 +90,4 @@ Anadir_dias_a_objetivo = async(id, dias) => {
 
 }
 
-module.exports = { Crear_objetivo, Obtener_todos_objetivos }
+module.exports = { Crear_objetivo, Obtener_todos_objetivos, Obtener_objetivos_usuario }

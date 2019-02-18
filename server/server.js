@@ -24,6 +24,7 @@ app.use(express.static(path.resolve(__dirname, '../public')));
 
 app.use(require('./routes/usuarios'));
 app.use(require('./routes/objetivos'));
+app.use(require('./routes/incidencias'));
 
 app.listen(process.env.PORT, () => {
     console.log('Escuchando puerto: ', 3000);
