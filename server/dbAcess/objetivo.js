@@ -62,6 +62,7 @@ Obtener_objetivo = (id) => {
                     err
                 });
             }
+            console.log('Objetivo conseguido');
             resolve(objetivoDB);
         })
     })
@@ -82,6 +83,21 @@ Modificar_objetivo = (id, objetivo) => {
     })
 }
 
+Cerrar_objetivo = async(id) => {
+    objetivo = await Obtener_objetivo(id);
+    console.log('Aqui llega');
+    let fechaAhora = new Date();
+    console.log('Fecha:', fechaAhora);
+    fechaAhora = Date.now();
+    // console.log('Fecha:', fechaAhora);
+    // console.log(object);
+    // objetivo.fechaFin = fechaAhora;
+    console.log(objetivo);
+    const diasLaborables = fechaUtils.Obtener_dias_laborables(objetivo.fechaInicio, objetivo.fechaFin);
+    console.log('diasLaborables-->:', diasLaborables);
+
+}
+
 Anadir_dias_a_objetivo = async(id, dias) => {
     objetivo = await Obtener_objetivo(id);
     objetivo = Anadir_dias_laborables(objetivo, dias);
@@ -90,4 +106,4 @@ Anadir_dias_a_objetivo = async(id, dias) => {
 
 }
 
-module.exports = { Crear_objetivo, Obtener_todos_objetivos, Obtener_objetivos_usuario }
+module.exports = { Crear_objetivo, Obtener_todos_objetivos, Obtener_objetivos_usuario, Anadir_dias_a_objetivo, Cerrar_objetivo }

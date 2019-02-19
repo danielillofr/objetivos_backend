@@ -8,7 +8,6 @@ const mongoose = require('mongoose');
 
 mongoose.connect(process.env.URLDB, (err) => {
     if (err) throw err;
-    console.log('BASE DE DATOS ONLINE');
 })
 
 // parse application/x-www-form-urlencoded

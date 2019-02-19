@@ -29,7 +29,7 @@ Anadir_dias_laborables = (objetivo, dias) => {
         } while ((fechaFinDate.getDay() == 0) || (fechaFinDate.getDay() == 6));
     }
     objetivo.fechaFin = fechaFinDate;
-    objetivo.diasLaborables += dias;
+    objetivo.diasLaborables = Number(objetivo.diasLaborables) + Number(dias);
     return objetivo;
 }
 

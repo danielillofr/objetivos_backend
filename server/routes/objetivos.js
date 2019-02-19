@@ -69,4 +69,9 @@ app.post('/api/objetivos', Autentificar, (req, res) => {
         })
 })
 
+app.post('/api/objetivos/cerrar/:idObjetivo', Autentificar, (req, res) => {
+    objetivoAccess.Cerrar_objetivo(req.params.idObjetivo);
+    res.send('Va');
+})
+
 module.exports = app;

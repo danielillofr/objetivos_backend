@@ -60,7 +60,6 @@ app.post('/api/usuarios', (req, res) => {
 //Login
 app.post('/api/usuarios/login', (req, res) => {
     let body = req.body;
-    console.log(body);
     if ((!body.nombre) || (!body.clave)) { //Aseguramos que esté el usuario y la clave en el body
         return res.status(200).json({
             ok: false,
