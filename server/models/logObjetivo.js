@@ -23,6 +23,18 @@ const logObjetivoSchema = new Schema({
     motivo: {
         type: String,
         default: ''
+    },
+    fechaFin: {
+        type: Date,
+        default: '1/1/1'
+    },
+    diasLaborables: {
+        type: Number,
+        default: 0
+    },
+    fechaLog: {
+        type: Date,
+        required: [true, 'La fecha del log es requerida']
     }
 
 });

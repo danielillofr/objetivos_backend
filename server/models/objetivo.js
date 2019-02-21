@@ -27,6 +27,10 @@ const objetivoSchema = new Schema({
     diasLaborables: {
         type: Number,
         default: 0
+    },
+    porcentaje: {
+        type: Number,
+        default: 0
     }
 });
 

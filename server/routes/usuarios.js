@@ -25,6 +25,21 @@ app.get('/api/usuarios', Autentificar, function(req, res) {
     })
 })
 
+app.get('/api/usuarios/:idAprobador', Autentificar, function(req, res) {
+    Usuario.find({ aprobador: req.params.idAprobador }, (err, usuariosDB) => {
+        if (err) {
+            return res.status(200).json({
+                ok: false,
+                errBaseDatos: true,
+                err
+            })
+        }
+        res.status(200).json({
+            ok: true,
+            usuarios: usuariosDB
+        })
+    })
+})
 
 //Creacion de un nuevo usuario
 
@@ -40,7 +55,9 @@ app.post('/api/usuarios', (req, res) => {
     let usuario = new Usuario({
         nombre: body.nombre,
         nombreCompleto: body.nombreCompleto,
-        clave: bcrypt.hashSync(body.clave, 10)
+        clave: bcrypt.hashSync(body.clave, 10),
+        role: body.role,
+        aprobador: body.aprobador
     })
     usuario.save((err, usuarioDB) => {
         if (err) {

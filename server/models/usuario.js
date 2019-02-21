@@ -2,6 +2,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const uniqueValidator = require('mongoose-unique-validator');
 
+let rolesValidos = {
+    values: ['DIRECTOR', 'COORDINADOR', 'INGENIERO'],
+    message: '{VALUE} no es un estado válido para el role'
+}
+
+
 const usuarioSchema = new Schema({
     nombre: {
         type: String,
@@ -19,6 +25,15 @@ const usuarioSchema = new Schema({
     email: {
         type: String,
         require: [true, 'El email es obligatorio']
+    },
+    role: {
+        type: String,
+        default: 'INGENIERO',
+        enum: rolesValidos
+    },
+    aprobador: {
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario'
     }
 })
 

@@ -6,7 +6,7 @@ const _ = require('underscore');
 Nueva_incidencia = async(usuario, datosIncidencia) => {
     let incidencia = await Crear_incidencia(datosIncidencia); //Creamos la incidencia
     let objetivo = await objetivoAccess.Anadir_dias_a_objetivo(datosIncidencia.objetivo, datosIncidencia.dias); //Añadimos los días al proyecto
-    let log = await logObjetivoAccess.Anadir_log(usuario, datosIncidencia); //Y añadimos al log
+    let log = await logObjetivoAccess.Anadir_log(usuario, datosIncidencia, objetivo); //Y añadimos al log
     return incidencia;
 }
 

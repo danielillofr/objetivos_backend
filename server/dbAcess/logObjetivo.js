@@ -1,14 +1,19 @@
 const LogObjetivo = require('./../models/logObjetivo');
 
-Anadir_log = (usuario, incidencia) => {
+Anadir_log = (usuario, incidencia, objetivo) => {
+    let fechaLog = new Date();
     let logObjetivo = new LogObjetivo({
-        usuario: usuario._id,
+        usuario: objetivo.usuario,
         nombreUsuario: usuario.nombre,
-        objetivo: incidencia.objetivo,
+        objetivo: objetivo._id,
         dias: incidencia.dias,
-        motivo: incidencia.motivo
+        motivo: incidencia.motivo,
+        fechaFin: objetivo.fechaFin,
+        diasLaborables: objetivo.diasLaborables,
+        fechaLog
     });
     return new Promise((resolve, reject) => {
+        console.log(object);
         logObjetivo.save((err, logObjetivoDB) => {
             if (err) {
                 reject({
@@ -24,4 +29,18 @@ Anadir_log = (usuario, incidencia) => {
     })
 }
 
-module.exports = { Anadir_log }
+Log_por_objetivo = (idObjetivo) => {
+    return new Promise((resolve, reject) => {
+        LogObjetivo.find({ objetivo: idObjetivo }, (err, logs) => {
+            if (err) {
+                reject({
+                    errBaseDatos: true,
+                    err
+                })
+            }
+            resolve(logs);
+        })
+    })
+}
+
+module.exports = { Anadir_log, Log_por_objetivo }
