@@ -13,7 +13,6 @@ Anadir_log = (usuario, incidencia, objetivo) => {
         fechaLog
     });
     return new Promise((resolve, reject) => {
-        console.log(object);
         logObjetivo.save((err, logObjetivoDB) => {
             if (err) {
                 reject({

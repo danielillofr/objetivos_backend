@@ -4,7 +4,14 @@ const _ = require('underscore');
 const fechaUtils = require('./../utils/fechaUtils')
 const logObjetivoAccess = require('./logObjetivo')
 
-Obtener_todos_objetivos = () => {
+module.exports.Anadir_dias_a_objetivo = async(id, dias) => {
+    objetivo = await Obtener_objetivo(id);
+    objetivo = Anadir_dias_laborables(objetivo, dias);
+    objetivo = _.pick(objetivo, ['fechaFin', 'diasLaborables']);
+    return await Modificar_objetivo(id, objetivo);
+}
+
+module.exports.Obtener_todos_objetivos = () => {
     return new Promise((resolve, reject) => {
         Objetivo.find({}, (err, objetivosDB) => {
             if (err) {
@@ -18,7 +25,7 @@ Obtener_todos_objetivos = () => {
     })
 }
 
-Obtener_objetivos_usuario = (idUsuario) => {
+module.exports.Obtener_objetivos_usuario = (idUsuario) => {
     return new Promise((resolve, reject) => {
         Objetivo.find({ usuario: idUsuario }, (err, objetivosDB) => {
             if (err) {
@@ -32,7 +39,7 @@ Obtener_objetivos_usuario = (idUsuario) => {
     })
 }
 
-Nuevo_objetivo = async(usuario, datosObjetivo) => {
+module.exports.Nuevo_objetivo = async(usuario, datosObjetivo) => {
     let objetivo = await Crear_objetivo(datosObjetivo);
     await logObjetivoAccess.Anadir_log(usuario, { dias: 0, motivo: 'Se crea el objetivo' }, objetivo);
     return objetivo;
@@ -89,7 +96,9 @@ Obtener_objetivo = (id) => {
     })
 }
 
-Obtener_objetivo_completo = async(id) => {
+module.exports.Obtener_objetivo = Obtener_objetivo;
+
+module.exports.Obtener_objetivo_completo = async(id) => {
     let objetivo = await Obtener_objetivo(id);
     let incidencias = await incidenciaAccess.Obtener_incidencias_por_objetivo(id);
     let logs = await logObjetivoAccess.Log_por_objetivo(id);
@@ -100,7 +109,7 @@ Obtener_objetivo_completo = async(id) => {
     }
 }
 
-Modificar_objetivo = (id, objetivo) => {
+module.exports.Modificar_objetivo = Modificar_objetivo = (id, objetivo) => {
     return new Promise((resolve, reject) => {
         Objetivo.findByIdAndUpdate(id, objetivo, { new: true }, (err, objetivoDB) => {
             if (err) {
@@ -115,37 +124,20 @@ Modificar_objetivo = (id, objetivo) => {
     })
 }
 
-//Pasamos la fecha final a hoy, y reajustamos los días laborables
-Cerrar_objetivo = async(id, reajustarPorcentaje) => {
+module.exports.Cerrar_objetivo = async(id, reajustarPorcentaje) => {
     objetivo = await Obtener_objetivo(id);
     objetivo.fechaFin = new Date();
     objetivo.diasLaborables = fechaUtils.Obtener_dias_laborables(objetivo.fechaInicio, objetivo.fechaFin);
+    console.log('Antes de reajustar');
     if (reajustarPorcentaje) {
-        let porcentaje = Number(objetivos.diasLaborables);
+        let porcentaje = Number(objetivo.diasLaborables);
         porcentaje = porcentaje / 261;
         porcentaje = porcentaje * 1000;
         porcentaje = Math.round(porcentaje);
         porcentaje = porcentaje / 10;
         objetivo.porcentaje = porcentaje;
     }
+    console.log('Despues de reajustar');
     objetivo = _.pick(objetivo, ['fechaFin', 'diasLaborables', 'porcentaje']);
     return await Modificar_objetivo(id, objetivo);
-}
-
-Anadir_dias_a_objetivo = async(id, dias) => {
-    objetivo = await Obtener_objetivo(id);
-    objetivo = Anadir_dias_laborables(objetivo, dias);
-    objetivo = _.pick(objetivo, ['fechaFin', 'diasLaborables']);
-    return await Modificar_objetivo(id, objetivo);
-}
-
-
-module.exports = {
-    Anadir_dias_a_objetivo,
-    Crear_objetivo,
-    Obtener_todos_objetivos,
-    Obtener_objetivos_usuario,
-    Cerrar_objetivo,
-    Nuevo_objetivo,
-    Obtener_objetivo_completo
 }

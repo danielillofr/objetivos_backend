@@ -1,12 +1,12 @@
 const Incidencia = require('./../models/incidencia');
-const objetivoAccess = require('./objetivo')
+const objetivo2Access = require('./objetivo2')
 const logObjetivoAccess = require('./logObjetivo')
 const _ = require('underscore');
 
 Nueva_incidencia = async(usuario, datosIncidencia) => {
-    let incidencia = await Crear_incidencia(datosIncidencia); //Creamos la incidencia
-    let objetivo = await objetivoAccess.Anadir_dias_a_objetivo(datosIncidencia.objetivo, datosIncidencia.dias); //Añadimos los días al proyecto
-    let log = await logObjetivoAccess.Anadir_log(usuario, datosIncidencia, objetivo); //Y añadimos al log
+    let incidencia = await Crear_incidencia(datosIncidencia);
+    let objetivo = await objetivo2Access.Anadir_dias_a_objetivo(datosIncidencia.objetivo, datosIncidencia.dias);
+    let log = await logObjetivoAccess.Anadir_log(usuario, datosIncidencia, objetivo);
     return incidencia;
 }
 

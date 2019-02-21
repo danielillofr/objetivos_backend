@@ -1,5 +1,3 @@
-const Incidencia = require('./../models/incidencia')
-const objetivoAccess = require('./../dbAcess/objetivo')
 const incidenciaAccess = require('./../dbAcess/incidencia')
 const dataUtils = require('./../utils/dataUtils')
 const express = require('express');
