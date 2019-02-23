@@ -3,6 +3,7 @@ const incidenciaAccess = require('./incidencia')
 const _ = require('underscore');
 const fechaUtils = require('./../utils/fechaUtils')
 const logObjetivoAccess = require('./logObjetivo')
+const dataUtils = require('./../utils/dataUtils')
 
 module.exports.Anadir_dias_a_objetivo = async(id, dias) => {
     objetivo = await Obtener_objetivo(id);
@@ -25,7 +26,7 @@ module.exports.Obtener_todos_objetivos = () => {
     })
 }
 
-module.exports.Obtener_objetivos_usuario = (idUsuario) => {
+module.exports.Obtener_objetivos_usuario = Obtener_objetivos_usuario = (idUsuario) => {
     return new Promise((resolve, reject) => {
         Objetivo.find({ usuario: idUsuario }, (err, objetivosDB) => {
             if (err) {
@@ -39,12 +40,17 @@ module.exports.Obtener_objetivos_usuario = (idUsuario) => {
     })
 }
 
-module.exports.Nuevo_objetivo = async(usuario, datosObjetivo) => {
-    let objetivo = await Crear_objetivo(datosObjetivo);
-    await logObjetivoAccess.Anadir_log(usuario, { dias: 0, motivo: 'Se crea el objetivo' }, objetivo);
-    return objetivo;
-
+module.exports.Obtener_datos_usuario = async(idUsuario) => {
+    const objetivos = await Obtener_objetivos_usuario(idUsuario);
+    const objetivo_planificado = dataUtils.Calcular_porcentaje_planificado(objetivos);
+    const objetivo_conseguido = dataUtils.Calcular_porcentaje_conseguido(objetivos);
+    return {
+        objetivos,
+        objetivo_planificado,
+        objetivo_conseguido
+    }
 }
+
 
 Crear_objetivo = (datosObjetivo) => {
     return new Promise((resolve, reject) => {
@@ -75,7 +81,15 @@ Crear_objetivo = (datosObjetivo) => {
     })
 }
 
-Obtener_objetivo = (id) => {
+module.exports.Nuevo_objetivo = async(usuario, datosObjetivo) => {
+    let objetivo = await Crear_objetivo(datosObjetivo);
+    await logObjetivoAccess.Anadir_log(usuario, { dias: 0, motivo: 'Se crea el objetivo' }, objetivo);
+    return objetivo;
+
+}
+
+
+module.exports.Obtener_objetivo = Obtener_objetivo = (id) => {
     return new Promise((resolve, reject) => {
         Objetivo.findById(id, (err, objetivoDB) => {
             if (err) {
@@ -95,8 +109,6 @@ Obtener_objetivo = (id) => {
         })
     })
 }
-
-module.exports.Obtener_objetivo = Obtener_objetivo;
 
 module.exports.Obtener_objetivo_completo = async(id) => {
     let objetivo = await Obtener_objetivo(id);

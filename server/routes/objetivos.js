@@ -39,11 +39,11 @@ app.get('/api/objetivos/completo/:idObjetivo', Autentificar, (req, res) => {
 
 //Obtener todos los objetivos por usuario
 app.get('/api/objetivos/:idUsuario', (req, res) => {
-    objetivo2Access.Obtener_objetivos_usuario(req.params.idUsuario)
-        .then(objetivos => {
+    objetivo2Access.Obtener_datos_usuario(req.params.idUsuario)
+        .then(datos => {
             res.json({
                 ok: true,
-                objetivos
+                datos
             })
         })
         .catch(err => {
