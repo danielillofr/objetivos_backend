@@ -4,17 +4,18 @@ const logObjetivoAccess = require('./logObjetivo')
 const _ = require('underscore');
 
 Nueva_incidencia = async(usuario, datosIncidencia) => {
-    let incidencia = await Crear_incidencia(datosIncidencia);
     let objetivo = await objetivo2Access.Anadir_dias_a_objetivo(datosIncidencia.objetivo, datosIncidencia.dias);
+    let incidencia = await Crear_incidencia(objetivo.usuario, datosIncidencia);
     let log = await logObjetivoAccess.Anadir_log(usuario, datosIncidencia, objetivo);
     return incidencia;
 }
 
-Crear_incidencia = (datosIncidencia) => {
+Crear_incidencia = (usuario, datosIncidencia) => {
     return new Promise((resolve, reject) => {
 
         let incidencia = new Incidencia({
             objetivo: datosIncidencia.objetivo,
+            usuario,
             dias: datosIncidencia.dias,
             motivo: datosIncidencia.motivo
         });
@@ -58,5 +59,18 @@ Obtener_incidencias_por_objetivo = (idObjetivo) => {
     })
 }
 
+Obtener_incidencias_por_usuario = (idUsuario) => {
+    return new Promise((resolve, reject) => {
+        Incidencia.find({ usuario: idUsuario }, (err, incidenciasDB) => {
+            if (err) {
+                reject({
+                    errBaseDatos: true,
+                    err
+                })
+            }
+            resolve(incidenciasDB);
+        })
+    })
+}
 
-module.exports = { Nueva_incidencia, Obtener_todas_incidencias, Obtener_incidencias_por_objetivo }
+module.exports = { Nueva_incidencia, Obtener_todas_incidencias, Obtener_incidencias_por_objetivo, Obtener_incidencias_por_usuario }

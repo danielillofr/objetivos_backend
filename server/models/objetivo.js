@@ -28,7 +28,7 @@ const objetivoSchema = new Schema({
         type: Number,
         default: 0
     },
-    porcentaje: {
+    diasProyecto: {
         type: Number,
         default: 0
     }

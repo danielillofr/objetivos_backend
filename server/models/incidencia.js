@@ -8,6 +8,11 @@ const incidenciaSchema = new Schema({
         ref: 'Objetivo',
         required: [true, 'El objetivo es requerido']
     },
+    usuario: {
+        type: Schema.Types.ObjectId,
+        ref: 'Usuario',
+        required: [true, 'El usuario es requerido']
+    },
     dias: {
         type: Number,
         required: [true, 'Los días son requeridos']

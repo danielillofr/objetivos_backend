@@ -4,6 +4,7 @@ const _ = require('underscore');
 const fechaUtils = require('./../utils/fechaUtils')
 const logObjetivoAccess = require('./logObjetivo')
 const dataUtils = require('./../utils/dataUtils')
+const usuarioAccess = require('./usuario')
 
 module.exports.Anadir_dias_a_objetivo = async(id, dias) => {
     objetivo = await Obtener_objetivo(id);
@@ -26,7 +27,7 @@ module.exports.Obtener_todos_objetivos = () => {
     })
 }
 
-module.exports.Obtener_objetivos_usuario = Obtener_objetivos_usuario = (idUsuario) => {
+Obtener_objetivos_usuario = (idUsuario) => {
     return new Promise((resolve, reject) => {
         Objetivo.find({ usuario: idUsuario }, (err, objetivosDB) => {
             if (err) {
@@ -42,12 +43,18 @@ module.exports.Obtener_objetivos_usuario = Obtener_objetivos_usuario = (idUsuari
 
 module.exports.Obtener_datos_usuario = async(idUsuario) => {
     const objetivos = await Obtener_objetivos_usuario(idUsuario);
-    const objetivo_planificado = dataUtils.Calcular_porcentaje_planificado(objetivos);
-    const objetivo_conseguido = dataUtils.Calcular_porcentaje_conseguido(objetivos);
+    const usuario = await usuarioAccess.Obtener_datos_usuario(idUsuario);
+    const incidencias = await incidenciaAccess.Obtener_incidencias_por_usuario(idUsuario);
+    // const objetivo_planificado = dataUtils.Calcular_porcentaje_planificado(objetivos);
+    // const objetivo_conseguido = dataUtils.Calcular_porcentaje_conseguido(objetivos);
+    // const datos_incidencias = dataUtils.Calcular_porcentaje_incidencias(incidencias, objetivo_planificado.laborables);
+    const datos = dataUtils.Calcular_porcentajes_dias(objetivos, incidencias);
+
     return {
+        usuario,
         objetivos,
-        objetivo_planificado,
-        objetivo_conseguido
+        incidencias,
+        datos
     }
 }
 
@@ -55,11 +62,11 @@ module.exports.Obtener_datos_usuario = async(idUsuario) => {
 Crear_objetivo = (datosObjetivo) => {
     return new Promise((resolve, reject) => {
         const diasLaborables = fechaUtils.Obtener_dias_laborables(datosObjetivo.fechaInicio, datosObjetivo.fechaFin);
-        let porcentaje = Number(diasLaborables);
-        porcentaje = porcentaje / 261;
-        porcentaje = porcentaje * 1000;
-        porcentaje = Math.round(porcentaje);
-        porcentaje = porcentaje / 10;
+        // let porcentaje = Number(diasLaborables);
+        // porcentaje = porcentaje / 261;
+        // porcentaje = porcentaje * 1000;
+        // porcentaje = Math.round(porcentaje);
+        // porcentaje = porcentaje / 10;
         const objetivo = new Objetivo({
             usuario: datosObjetivo.usuario,
             nombre: datosObjetivo.nombre,
@@ -67,7 +74,7 @@ Crear_objetivo = (datosObjetivo) => {
             fechaFin: Date.parse(datosObjetivo.fechaFin),
             conseguido: datosObjetivo.conseguido,
             diasLaborables,
-            porcentaje
+            diasProyecto: diasLaborables
         });
         objetivo.save((err, objetivoDB) => {
             if (err) {
@@ -89,7 +96,7 @@ module.exports.Nuevo_objetivo = async(usuario, datosObjetivo) => {
 }
 
 
-module.exports.Obtener_objetivo = Obtener_objetivo = (id) => {
+Obtener_objetivo = (id) => {
     return new Promise((resolve, reject) => {
         Objetivo.findById(id, (err, objetivoDB) => {
             if (err) {
@@ -139,16 +146,17 @@ module.exports.Modificar_objetivo = Modificar_objetivo = (id, objetivo) => {
 module.exports.Cerrar_objetivo = async(id, reajustarPorcentaje) => {
     objetivo = await Obtener_objetivo(id);
     objetivo.fechaFin = new Date();
-    objetivo.diasLaborables = fechaUtils.Obtener_dias_laborables(objetivo.fechaInicio, objetivo.fechaFin);
+    objetivo.diasLaborables = objetivo.diasProyecto = fechaUtils.Obtener_dias_laborables(objetivo.fechaInicio, objetivo.fechaFin);
+
     console.log('Antes de reajustar');
-    if (reajustarPorcentaje) {
-        let porcentaje = Number(objetivo.diasLaborables);
-        porcentaje = porcentaje / 261;
-        porcentaje = porcentaje * 1000;
-        porcentaje = Math.round(porcentaje);
-        porcentaje = porcentaje / 10;
-        objetivo.porcentaje = porcentaje;
-    }
+    // if (reajustarPorcentaje) {
+    //     let porcentaje = Number(objetivo.diasLaborables);
+    //     porcentaje = porcentaje / 261;
+    //     porcentaje = porcentaje * 1000;
+    //     porcentaje = Math.round(porcentaje);
+    //     porcentaje = porcentaje / 10;
+    //     objetivo.porcentaje = porcentaje;
+    // }
     console.log('Despues de reajustar');
     objetivo = _.pick(objetivo, ['fechaFin', 'diasLaborables', 'porcentaje']);
     return await Modificar_objetivo(id, objetivo);
