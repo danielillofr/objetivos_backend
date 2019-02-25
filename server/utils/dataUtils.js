@@ -50,13 +50,17 @@ Calcular_porcentajes_dias = (objetivos, incidencias) => {
     porcentajeProyecto = Math.round(porcentajeProyecto);
     porcentajeProyecto = porcentajeProyecto / 10;
 
-    let porcentajeProVsTot = (diasProyecto / diasTotales) * 100;
+    let porcentajeProVsTot = (diasProyecto / diasTotales) * 1000;
+    porcentajeProVsTot = Math.round(porcentajeProVsTot);
+    porcentajeProVsTot = porcentajeProVsTot / 10;
 
     let porcentajeIncidencias = (diasIncidencias / 261) * 1000;
     porcentajeIncidencias = Math.round(porcentajeIncidencias);
     porcentajeIncidencias = porcentajeIncidencias / 10;
 
-    let porcentajeIncVsTot = (diasIncidencias / diasTotales) * 100;
+    let porcentajeIncVsTot = (diasIncidencias / diasTotales) * 1000;
+    porcentajeIncVsTot = Math.round(porcentajeIncVsTot);
+    porcentajeIncVsTot = porcentajeIncVsTot / 10;
 
     return {
         totales: {
