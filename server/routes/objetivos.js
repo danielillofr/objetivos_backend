@@ -72,12 +72,12 @@ app.post('/api/objetivos', Autentificar, (req, res) => {
 //Cerrar cierra el objetivo. Se ha terminado el proyecto antes. Se respeta el porcentaje del objetivo
 
 app.post('/api/objetivos/cerrar/:idObjetivo', Autentificar, (req, res) => {
-    objetivo2Access.Cerrar_objetivo(req.params.idObjetivo, 0)
-        .then(resultado => {
-            console.log('Resultado', resultado);
+    objetivo2Access.Cerrar_objetivo(req.params.idObjetivo, 0, req.usuario)
+        .then(objetivo => {
+            console.log('Resultado', objetivo);
             res.json({
                 ok: true,
-                resultado
+                objetivo
             })
         })
         .catch(err => {
@@ -86,15 +86,35 @@ app.post('/api/objetivos/cerrar/:idObjetivo', Autentificar, (req, res) => {
         })
 })
 
+app.post('/api/objetivos/replanificar/:idObjetivo', Autentificar, (req, res) => {
+    let body = req.body;
+    if (!body.fechaFin) {
+        return res.json(dataUtils.Respuesta_error_generico('Fecha fin es necesaria'));
+    }
+    console.log('Nueva fecha fin:', body.fechaFin);
+    objetivo2Access.Replanificar_objetivo(req.params.idObjetivo, body.fechaFin, req.usuario)
+        .then(objetivo => {
+            res.json({
+                ok: true,
+                objetivo
+            })
+        })
+        .catch(err => {
+            console.log('Error:', err)
+                // res.send('Va');
+        })
+})
+
+
 //Cancelar proyecto, se ha cerrado sin terminar, se reajusta el porcentaje
 
 app.post('/api/objetivos/cancelar/:idObjetivo', Autentificar, (req, res) => {
-    objetivo2Access.Cerrar_objetivo(req.params.idObjetivo, 1)
-        .then(resultado => {
-            console.log('Resultado', resultado);
+    objetivo2Access.Cerrar_objetivo(req.params.idObjetivo, 1, req.usuario)
+        .then(objetivo => {
+            console.log('Resultado', objetivo);
             res.json({
                 ok: true,
-                resultado
+                objetivo
             })
         })
         .catch(err => {

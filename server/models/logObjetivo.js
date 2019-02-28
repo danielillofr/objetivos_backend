@@ -32,6 +32,10 @@ const logObjetivoSchema = new Schema({
         type: Number,
         default: 0
     },
+    diasProyecto: {
+        type: Number,
+        default: 0
+    },
     fechaLog: {
         type: Date,
         required: [true, 'La fecha del log es requerida']

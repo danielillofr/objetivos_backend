@@ -62,11 +62,6 @@ module.exports.Obtener_datos_usuario = async(idUsuario) => {
 Crear_objetivo = (datosObjetivo) => {
     return new Promise((resolve, reject) => {
         const diasLaborables = fechaUtils.Obtener_dias_laborables(datosObjetivo.fechaInicio, datosObjetivo.fechaFin);
-        // let porcentaje = Number(diasLaborables);
-        // porcentaje = porcentaje / 261;
-        // porcentaje = porcentaje * 1000;
-        // porcentaje = Math.round(porcentaje);
-        // porcentaje = porcentaje / 10;
         const objetivo = new Objetivo({
             usuario: datosObjetivo.usuario,
             nombre: datosObjetivo.nombre,
@@ -74,7 +69,8 @@ Crear_objetivo = (datosObjetivo) => {
             fechaFin: Date.parse(datosObjetivo.fechaFin),
             conseguido: datosObjetivo.conseguido,
             diasLaborables,
-            diasProyecto: diasLaborables
+            diasProyecto: diasLaborables,
+            estado: 'EN CURSO'
         });
         objetivo.save((err, objetivoDB) => {
             if (err) {
@@ -143,21 +139,32 @@ module.exports.Modificar_objetivo = Modificar_objetivo = (id, objetivo) => {
     })
 }
 
-module.exports.Cerrar_objetivo = async(id, reajustarPorcentaje) => {
+module.exports.Cerrar_objetivo = async(id, reajustarPorcentaje, usuario) => {
     objetivo = await Obtener_objetivo(id);
     objetivo.fechaFin = new Date();
     objetivo.diasLaborables = objetivo.diasProyecto = fechaUtils.Obtener_dias_laborables(objetivo.fechaInicio, objetivo.fechaFin);
+    let motivo = 'Se cancela el objetivo';
+    if (reajustarPorcentaje) {
+        objetivo.estado = 'CANCELADO';
+        objetivo = _.pick(objetivo, ['fechaFin', 'diasLaborables', 'estado', 'diasProyecto']); //Al cancelar el proyecto se cambian los dias de proyecto
+    } else {
+        objetivo.estado = 'CERRADO';
+        objetivo = _.pick(objetivo, ['fechaFin', 'diasLaborables', 'estado']); //Al cerrarlo no
+        motivo = 'Se cierra el objetivo';
+    }
+    objetivo = await Modificar_objetivo(id, objetivo);
+    await logObjetivoAccess.Anadir_log(usuario, { dias: 0, motivo }, objetivo);
+    return objetivo;
+}
 
-    console.log('Antes de reajustar');
-    // if (reajustarPorcentaje) {
-    //     let porcentaje = Number(objetivo.diasLaborables);
-    //     porcentaje = porcentaje / 261;
-    //     porcentaje = porcentaje * 1000;
-    //     porcentaje = Math.round(porcentaje);
-    //     porcentaje = porcentaje / 10;
-    //     objetivo.porcentaje = porcentaje;
-    // }
-    console.log('Despues de reajustar');
-    objetivo = _.pick(objetivo, ['fechaFin', 'diasLaborables', 'porcentaje']);
-    return await Modificar_objetivo(id, objetivo);
+module.exports.Replanificar_objetivo = async(id, fechaFin, usuario) => {
+    let objetivo = await Obtener_objetivo(id);
+    objetivo.fechaFin = Date.parse(fechaFin);
+    objetivo.diasLaborables = objetivo.diasProyecto = fechaUtils.Obtener_dias_laborables(objetivo.fechaInicio, objetivo.fechaFin);
+    let motivo = 'Se replanifica el objetivo';
+    objetivo = _.pick(objetivo, ['fechaFin', 'diasLaborables', 'diasProyecto']); //Al cancelar el proyecto se cambian los dias de proyecto
+    objetivo = await Modificar_objetivo(id, objetivo);
+    await logObjetivoAccess.Anadir_log(usuario, { dias: 0, motivo }, objetivo);
+    return objetivo;
+
 }

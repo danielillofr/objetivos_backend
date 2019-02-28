@@ -2,6 +2,11 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const uniqueValidator = require('mongoose-unique-validator');
 
+let estadosValidos = {
+    values: ['EN CURSO', 'CERRADO', 'CANCELADO'],
+    message: '{VALUE} no es un estado válido para el role'
+}
+
 const objetivoSchema = new Schema({
     usuario: {
         type: Schema.Types.ObjectId,
@@ -31,6 +36,11 @@ const objetivoSchema = new Schema({
     diasProyecto: {
         type: Number,
         default: 0
+    },
+    estado: {
+        type: String,
+        default: 'EN CURSO',
+        enum: estadosValidos
     }
 });
 

@@ -10,6 +10,7 @@ Anadir_log = (usuario, incidencia, objetivo) => {
         motivo: incidencia.motivo,
         fechaFin: objetivo.fechaFin,
         diasLaborables: objetivo.diasLaborables,
+        diasProyecto: objetivo.diasProyecto,
         fechaLog
     });
     return new Promise((resolve, reject) => {

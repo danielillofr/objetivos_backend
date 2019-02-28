@@ -27,7 +27,7 @@ Calcular_porcentajes_dias = (objetivos, incidencias) => {
     dateFechaFin.setTime(Date.parse('2018-1-1'));
     objetivos.forEach(element => {
         diasTotales += element.diasLaborables;
-        diasProyecto += element.diasProyecto;
+        // diasProyecto += element.diasProyecto;
         let porcentajeObjetivo = (element.diasProyecto / 261);
         porcentajeObjetivo = (porcentajeObjetivo * element.conseguido);
         porcentajeConseguido += porcentajeObjetivo;
@@ -38,6 +38,8 @@ Calcular_porcentajes_dias = (objetivos, incidencias) => {
     incidencias.forEach(element => {
         diasIncidencias += element.dias;
     })
+
+    diasProyecto = diasTotales - diasIncidencias;
 
     let porcentajeTotales = (diasTotales / 261) * 1000;
     porcentajeTotales = Math.round(porcentajeTotales);
