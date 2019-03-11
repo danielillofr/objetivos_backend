@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const uniqueValidator = require('mongoose-unique-validator');
 
 let rolesValidos = {
-    values: ['DIRECTOR', 'COORDINADOR', 'INGENIERO'],
+    values: ['DIRECTOR', 'RESPONSABLE', 'COORDINADOR', 'INGENIERO'],
     message: '{VALUE} no es un estado válido para el role'
 }
 
@@ -40,7 +40,7 @@ const usuarioSchema = new Schema({
 usuarioSchema.methods.toJSON = function() {
     let user = this;
     let userObject = user.toObject();
-    delete userObject.clave;
+    // delete userObject.clave;
     return userObject;
 }
 
