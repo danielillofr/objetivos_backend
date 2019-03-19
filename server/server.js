@@ -26,5 +26,5 @@ app.use(require('./routes/objetivos'));
 app.use(require('./routes/incidencias'));
 
 app.listen(process.env.PORT, () => {
-    console.log('Escuchando puerto: ', 3000);
+    console.log('Escuchando puerto: ', process.env.PORT);
 });
