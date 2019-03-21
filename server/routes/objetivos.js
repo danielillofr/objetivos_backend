@@ -123,6 +123,23 @@ app.post('/api/objetivos/cancelar/:idObjetivo', Autentificar, (req, res) => {
         })
 });
 
+app.post('/api/objetivos/terminar/:idObjetivo', Autentificar, (req, res) => {
+    console.log('Terminando objetivo');
+    let body = req.body;
+    objetivo2Access.Terminar_objetivo(req.params.idObjetivo, req.usuario)
+        .then(objetivo => {
+            res.json({
+                ok: true,
+                objetivo
+            })
+        })
+        .catch(err => {
+            console.log('Error:', err)
+                // res.send('Va');
+        })
+})
+
+
 app.put('/api/objetivos/:idObjetivo', Autentificar, (req, res) => {
     let body = req.body;
     if (!body.conseguido) {

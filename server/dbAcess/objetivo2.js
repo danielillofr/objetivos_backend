@@ -170,3 +170,13 @@ module.exports.Replanificar_objetivo = async(id, fechaFin, usuario) => {
     return objetivo;
 
 }
+
+module.exports.Terminar_objetivo = async(id, usuario) => {
+    let objetivo = await Obtener_objetivo(id);
+    let motivo = 'Se termina correctamente el proyecto';
+    objetivo.estado = 'CERRADO';
+    objetivo = _.pick(objetivo, ['estado']);
+    objetivo = await Modificar_objetivo(id, objetivo);
+    await logObjetivoAccess.Anadir_log(usuario, { dias: 0, motivo }, objetivo);
+    return objetivo;
+}
