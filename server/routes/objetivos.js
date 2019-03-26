@@ -6,6 +6,8 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const _ = require('underscore');
 
+const pdf = require('../pdf')
+
 const fechaUtils = require('./../utils/fechaUtils')
 
 const dataUtils = require('./../utils/dataUtils')
@@ -157,5 +159,6 @@ app.put('/api/objetivos/:idObjetivo', Autentificar, (req, res) => {
             res.json(dataUtils.Respuesta_error_base(err));
         })
 })
+
 
 module.exports = app;

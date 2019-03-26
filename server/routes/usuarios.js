@@ -5,6 +5,8 @@ const app = express();
 const jwt = require('jsonwebtoken');
 const _ = require('underscore');
 
+const pdf = require('./../pdf')
+
 const { Autentificar, AutentificarAdmin, AutentificarAdminOUser } = require('./../middlewares/Autentificar');
 
 //Obtener un listado con todos los usuarios. Solo administrador
@@ -190,6 +192,18 @@ app.put('/api/usuarios/:id', [Autentificar, AutentificarAdminOUser], (req, res) 
             usuario: usuarioDB
         })
     })
+})
+
+app.get('/api/usuarios/imprimir/:idUsuario', (req,res) => {
+    pdf.Crear_pdf(req.params.idUsuario)
+        .then(resp => {
+            res.setHeader('Content-Type', 'application/pdf');
+            res.send(resp);
+        })
+        .catch(err => {
+            console.log('Error:', err)
+            res.send('ERROR');
+        })
 })
 
 module.exports = app;

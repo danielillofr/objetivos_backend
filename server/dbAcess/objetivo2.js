@@ -92,7 +92,7 @@ module.exports.Nuevo_objetivo = async(usuario, datosObjetivo) => {
 }
 
 
-Obtener_objetivo = (id) => {
+module.exports.Obtener_objetivo = Obtener_objetivo = (id) => {
     return new Promise((resolve, reject) => {
         Objetivo.findById(id, (err, objetivoDB) => {
             if (err) {
