@@ -20,6 +20,10 @@ const incidenciaSchema = new Schema({
     motivo: {
         type: String,
         required: [true, 'El motivo es requerio']
+    },
+    ausencia: {
+        type: Boolean,
+        default: false
     }
 });
 

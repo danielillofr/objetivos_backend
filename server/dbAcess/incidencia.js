@@ -17,7 +17,8 @@ Crear_incidencia = (usuario, datosIncidencia) => {
             objetivo: datosIncidencia.objetivo,
             usuario,
             dias: datosIncidencia.dias,
-            motivo: datosIncidencia.motivo
+            motivo: datosIncidencia.motivo,
+            ausencia: datosIncidencia.ausencia
         });
         incidencia.save((err, incidenciaDB) => {
             if (err) {
