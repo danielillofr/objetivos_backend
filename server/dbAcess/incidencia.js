@@ -74,4 +74,18 @@ Obtener_incidencias_por_usuario = (idUsuario) => {
     })
 }
 
-module.exports = { Nueva_incidencia, Obtener_todas_incidencias, Obtener_incidencias_por_objetivo, Obtener_incidencias_por_usuario }
+Eliminar_incidencias_de_objetivo =  (idObjetivo) => {
+    return new Promise((resolve,reject) => {
+        Incidencia.deleteMany({objetivo: idObjetivo}, (err) => {
+            if (err) {
+                reject({
+                    errBaseDatos: true,
+                    err
+                })
+            }
+            resolve(true);
+        })
+    })
+}
+
+module.exports = { Nueva_incidencia, Obtener_todas_incidencias, Obtener_incidencias_por_objetivo, Obtener_incidencias_por_usuario,Eliminar_incidencias_de_objetivo }

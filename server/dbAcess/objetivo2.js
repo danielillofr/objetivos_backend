@@ -139,6 +139,26 @@ module.exports.Modificar_objetivo = Modificar_objetivo = (id, objetivo) => {
     })
 }
 
+Eliminar_objetivo = (idObjetivo) => {
+    return new Promise((resolve,reject) => {
+        Objetivo.findByIdAndDelete(idObjetivo, (err, objetivoEliminado) => {
+            if (err) {
+                reject({
+                    errBaseDatos: true,
+                    err
+                })
+            }
+            resolve(objetivoEliminado);
+        })
+    })
+}
+
+module.exports.Eliminar_objetivo_completo = async(idObjetivo) => {
+    let objetivoEliminado = await Eliminar_objetivo(idObjetivo);
+    await incidenciaAccess.Eliminar_incidencias_de_objetivo(idObjetivo);
+    return objetivoEliminado;
+}
+
 module.exports.Cerrar_objetivo = async(id, reajustarPorcentaje, usuario) => {
     objetivo = await Obtener_objetivo(id);
     objetivo.fechaFin = new Date();

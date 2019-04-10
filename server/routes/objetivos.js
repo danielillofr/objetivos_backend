@@ -160,5 +160,17 @@ app.put('/api/objetivos/:idObjetivo', Autentificar, (req, res) => {
         })
 })
 
+app.delete('/api/objetivos/:idObjetivo', Autentificar, (req,res) => {
+    objetivo2Access.Eliminar_objetivo_completo(req.params.idObjetivo)
+        .then((objetivoEliminado) => {
+            res.json({
+                ok: true,
+                objetivoEliminado
+            })
+        })
+        .catch(err => {
+            res.json(dataUtils.Respuesta_error_base(err));
+        })
+})
 
 module.exports = app;

@@ -6,7 +6,7 @@ Obtener_dias_laborables = (fechaInicio, fechaFin) => {
     const tiempoFin = fechaFinDate.getTime();
     let tiempoActual = fechaInicioDate.getTime();
     fechaActualDate = fechaInicioDate;
-    let diasLaborables = 0;
+    let diasLaborables = 1;
 
     while (tiempoActual < tiempoFin) {
         diasLaborables++;
