@@ -41,6 +41,10 @@ const objetivoSchema = new Schema({
         type: String,
         default: 'EN CURSO',
         enum: estadosValidos
+    },
+    comEvaluacion: {
+        type: String,
+        default: ''
     }
 });
 
