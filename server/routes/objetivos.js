@@ -28,6 +28,16 @@ app.get('/api/objetivos', Autentificar, (req, res) => {
         })
 })
 
+app.get('/api/recalculartodo', [Autentificar, AutentificarAdmin], (req,res) => {
+    objetivo2Access.recalculartodo(req.usuario)
+        .then((respuesta) => {
+            res.send(respuesta)
+        })
+        .catch((err) => {
+            res.json({err: err})
+        })
+})
+
 app.get('/api/objetivos/completo/:idObjetivo', Autentificar, (req, res) => {
     objetivo2Access.Obtener_objetivo_completo(req.params.idObjetivo)
         .then(objetivoCompleto => {
@@ -172,5 +182,7 @@ app.delete('/api/objetivos/:idObjetivo', Autentificar, (req,res) => {
             res.json(dataUtils.Respuesta_error_base(err));
         })
 })
+
+
 
 module.exports = app;

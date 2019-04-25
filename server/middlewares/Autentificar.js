@@ -19,8 +19,9 @@ let Autentificar = (req, res, next) => {
             })
         }
         req.usuario = decoded.usuario;
+        next();
     });
-    next();
+    
 }
 
 let AutentificarAdmin = (req, res, next) => {

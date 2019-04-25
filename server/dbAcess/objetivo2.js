@@ -13,7 +13,7 @@ module.exports.Anadir_dias_a_objetivo = async(id, dias) => {
     return await Modificar_objetivo(id, objetivo);
 }
 
-module.exports.Obtener_todos_objetivos = () => {
+module.exports.Obtener_todos_objetivos = Obtener_todos_objetivos = () => {
     return new Promise((resolve, reject) => {
         Objetivo.find({}, (err, objetivosDB) => {
             if (err) {
@@ -177,9 +177,11 @@ module.exports.Cerrar_objetivo = async(id, reajustarPorcentaje, usuario) => {
     return objetivo;
 }
 
-module.exports.Replanificar_objetivo = async(id, fechaFin, usuario) => {
+module.exports.Replanificar_objetivo = Replanificar_objetivo = async(id, fechaFin, usuario) => {
     let objetivo = await Obtener_objetivo(id);
-    objetivo.fechaFin = Date.parse(fechaFin);
+    if (fechaFin) {
+        objetivo.fechaFin = Date.parse(fechaFin);
+    }
     let incidencias = await incidenciaAccess.Obtener_incidencias_por_objetivo(id);
     const dias = dataUtils.Dias_incidencias(incidencias);
     let diasIncidencias = dias.diasIncidencias;
@@ -201,4 +203,17 @@ module.exports.Terminar_objetivo = async(id, usuario) => {
     objetivo = await Modificar_objetivo(id, objetivo);
     await logObjetivoAccess.Anadir_log(usuario, { dias: 0, motivo }, objetivo);
     return objetivo;
+}
+
+module.exports.recalculartodo = async(usuario) => {
+    try{
+        let objetivos = await Obtener_todos_objetivos();
+        for (let i = 0; i < objetivos.length; i++) {
+            await Replanificar_objetivo (objetivos[i]._id, null, usuario);
+        }
+        return 'OK';
+    }catch(err){
+        console.log('Error:',err)
+        throw new Error(err);
+    }
 }
