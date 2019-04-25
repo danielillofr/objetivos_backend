@@ -154,10 +154,7 @@ app.post('/api/objetivos/terminar/:idObjetivo', Autentificar, (req, res) => {
 
 app.put('/api/objetivos/:idObjetivo', Autentificar, (req, res) => {
     let body = req.body;
-    if (!body.conseguido) {
-            return res.json(dataUtils.Respuesta_error_generico('Conseguido es necesario'))
-    }
-    body = _.pick(body, ['conseguido', 'comEvaluacion']);
+    body = _.pick(body, ['nombre','conseguido', 'comEvaluacion']);
     objetivo2Access.Modificar_objetivo(req.params.idObjetivo, body)
         .then(objetivo => {
             res.json({
