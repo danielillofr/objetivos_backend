@@ -18,6 +18,25 @@ Respuesta_error_base = (err) => {
     })
 }
 
+//Se le pasan las incidencias y devuelve un objeto con los dias de ausencia e incidencias
+Dias_incidencias = (incidencias) => {
+    let diasIncidencias = 0;
+    let diasAusencias = 0;
+    for (let i = 0; i < incidencias.length; i++)
+    {
+        let element = incidencias[i];
+        if (element.ausencia) {
+            diasAusencias += element.dias;
+        }else{
+            diasIncidencias += element.dias;
+        }
+    }
+    return {
+        diasAusencias,
+        diasIncidencias
+    }
+}
+
 Calcular_porcentajes_dias = (objetivos, incidencias) => {
     let diasTotales = 0;
     let diasProyecto = 0;
@@ -27,13 +46,9 @@ Calcular_porcentajes_dias = (objetivos, incidencias) => {
     let diasAnual = 261;
     let dateFechaFin = new Date();
     dateFechaFin.setTime(Date.parse('2018-1-1'));
-    incidencias.forEach(element => {
-        if (element.ausencia) {
-            diasAusencias += element.dias;
-        }else{
-            diasIncidencias += element.dias;
-        }
-    })
+    const dias = Dias_incidencias(incidencias);
+    diasAusencias = dias.diasAusencias;
+    diasIncidencias = dias.diasIncidencias;
     diasAnual -= diasAusencias;
     objetivos.forEach(element => {
         diasTotales += element.diasLaborables;
@@ -45,6 +60,9 @@ Calcular_porcentajes_dias = (objetivos, incidencias) => {
             dateFechaFin = element.fechaFin;
         }
     });
+
+
+
     diasTotales -= diasAusencias;
     diasProyecto = diasTotales - diasIncidencias;
 
@@ -124,4 +142,4 @@ Calcular_porcentaje_incidencias = (incidencias, laborables) => {
 
 }
 
-module.exports = { Respuesta_error_generico, Respuesta_error_base, Calcular_porcentaje_planificado, Calcular_porcentaje_conseguido, Calcular_porcentaje_incidencias, Calcular_porcentajes_dias }
+module.exports = { Respuesta_error_generico, Respuesta_error_base, Calcular_porcentaje_planificado, Calcular_porcentaje_conseguido, Calcular_porcentaje_incidencias, Calcular_porcentajes_dias, Dias_incidencias }

@@ -180,7 +180,9 @@ module.exports.Cerrar_objetivo = async(id, reajustarPorcentaje, usuario) => {
 module.exports.Replanificar_objetivo = async(id, fechaFin, usuario) => {
     let objetivo = await Obtener_objetivo(id);
     objetivo.fechaFin = Date.parse(fechaFin);
-    let diasIncidencias = objetivo.diasLaborables - objetivo.diasProyecto;
+    let incidencias = await incidenciaAccess.Obtener_incidencias_por_objetivo(id);
+    const dias = dataUtils.Dias_incidencias(incidencias);
+    let diasIncidencias = dias.diasIncidencias;
     objetivo.diasLaborables = fechaUtils.Obtener_dias_laborables(objetivo.fechaInicio, objetivo.fechaFin);
     objetivo.diasProyecto = objetivo.diasLaborables - diasIncidencias;
     let motivo = 'Se replanifica el objetivo';
