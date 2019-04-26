@@ -184,7 +184,7 @@ module.exports.Replanificar_objetivo = Replanificar_objetivo = async(id, fechaFi
     }
     let incidencias = await incidenciaAccess.Obtener_incidencias_por_objetivo(id);
     const dias = dataUtils.Dias_incidencias(incidencias);
-    let diasIncidencias = dias.diasIncidencias;
+    let diasIncidencias = dias.diasIncidencias + dias.diasAusencias;
     objetivo.diasLaborables = fechaUtils.Obtener_dias_laborables(objetivo.fechaInicio, objetivo.fechaFin);
     objetivo.diasProyecto = objetivo.diasLaborables - diasIncidencias;
     let motivo = 'Se replanifica el objetivo';
