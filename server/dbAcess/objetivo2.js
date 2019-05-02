@@ -177,10 +177,15 @@ module.exports.Cerrar_objetivo = async(id, reajustarPorcentaje, usuario) => {
     return objetivo;
 }
 
-module.exports.Replanificar_objetivo = Replanificar_objetivo = async(id, fechaFin, usuario) => {
+module.exports.Replanificar_objetivo = Replanificar_objetivo = async(id, datos, usuario) => {
+    let fechaInicio = datos.fechaInicio;
+    let fechaFin = datos.fechaFin;
     let objetivo = await Obtener_objetivo(id);
     if (fechaFin) {
         objetivo.fechaFin = Date.parse(fechaFin);
+    }
+    if (fechaInicio) {
+        objetivo.fechaInicio = Date.parse(fechaInicio);
     }
     let incidencias = await incidenciaAccess.Obtener_incidencias_por_objetivo(id);
     const dias = dataUtils.Dias_incidencias(incidencias);
@@ -188,7 +193,7 @@ module.exports.Replanificar_objetivo = Replanificar_objetivo = async(id, fechaFi
     objetivo.diasLaborables = fechaUtils.Obtener_dias_laborables(objetivo.fechaInicio, objetivo.fechaFin);
     objetivo.diasProyecto = objetivo.diasLaborables - diasIncidencias;
     let motivo = 'Se replanifica el objetivo';
-    objetivo = _.pick(objetivo, ['fechaFin', 'diasLaborables', 'diasProyecto']); //Al cancelar el proyecto se cambian los dias de proyecto
+    objetivo = _.pick(objetivo, ['fechaInicio','fechaFin', 'diasLaborables', 'diasProyecto']); //Al cancelar el proyecto se cambian los dias de proyecto
     objetivo = await Modificar_objetivo(id, objetivo);
     await logObjetivoAccess.Anadir_log(usuario, { dias: 0, motivo }, objetivo);
     return objetivo;

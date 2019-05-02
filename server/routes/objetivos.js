@@ -103,8 +103,10 @@ app.post('/api/objetivos/replanificar/:idObjetivo', Autentificar, (req, res) => 
     if (!body.fechaFin) {
         return res.json(dataUtils.Respuesta_error_generico('Fecha fin es necesaria'));
     }
-    console.log('Nueva fecha fin:', body.fechaFin);
-    objetivo2Access.Replanificar_objetivo(req.params.idObjetivo, body.fechaFin, req.usuario)
+    body = _.pick(body,['fechaInicio', 'fechaFin']);
+    console.log('Body:', body);
+    console.log(`Fecha inicio:${body.fechaInicio}, fecha fin:${body.fechaFin}`);
+    objetivo2Access.Replanificar_objetivo(req.params.idObjetivo, body, req.usuario)
         .then(objetivo => {
             res.json({
                 ok: true,
